@@ -1,0 +1,19 @@
+OUTPUT_FORMAT(binary)
+STARTUP(output/sysinit.asmo)
+INPUT(
+output/sysinit.co
+output/common.co
+output/pmmgr.co
+output/idt.asmo
+)
+SECTIONS
+{
+    . = 0x100000;
+	FileStart = .;
+    .text : { *(.text*) }
+    .data : { *(.data*) }
+    .rodata : { *(.rodata*) }
+    .bss : { *(.bss*) }
+    .eh_frame : { *(.eh_frame*) }
+	FileEnd = .;
+}

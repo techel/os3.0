@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="x86">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="x86\boot">
+      <UniqueIdentifier>{45a210c0-a74a-4e89-917b-d9f0cf399c00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="x86\sysinit">
+      <UniqueIdentifier>{6effffb1-a52c-4d18-9f45-92c854446589}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="x86\bootconf.ini">
+      <Filter>x86\boot</Filter>
+    </None>
+    <None Include="x86\bootmldr.asm">
+      <Filter>x86\boot</Filter>
+    </None>
+    <None Include="x86\fat12bootloader.asm">
+      <Filter>x86\boot</Filter>
+    </None>
+    <None Include="x86\fat12drv.asm">
+      <Filter>x86\boot</Filter>
+    </None>
+    <None Include="x86\idt.asm">
+      <Filter>x86\sysinit</Filter>
+    </None>
+    <None Include="x86\makefile">
+      <Filter>x86</Filter>
+    </None>
+    <None Include="x86\linker.asm">
+      <Filter>x86\boot</Filter>
+    </None>
+    <None Include="x86\sysinit16.asm">
+      <Filter>x86\boot</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="x86\boot.txt">
+      <Filter>x86\boot</Filter>
+    </Text>
+    <Text Include="x86\linkerscript.txt">
+      <Filter>x86</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="x86\pmmgr.cpp">
+      <Filter>x86\sysinit</Filter>
+    </ClCompile>
+    <ClCompile Include="x86\sysinit.cpp">
+      <Filter>x86\sysinit</Filter>
+    </ClCompile>
+    <ClCompile Include="x86\common.cpp">
+      <Filter>x86\sysinit</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="x86\common.hpp">
+      <Filter>x86\sysinit</Filter>
+    </ClInclude>
+    <ClInclude Include="x86\pmmgr.hpp">
+      <Filter>x86\sysinit</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

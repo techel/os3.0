@@ -1,0 +1,11 @@
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.sdf
+*.opensdf
+log.txt
+*.opendb
+/os3.0.VC.db
+/install.log
+/sysinit/sysinit.log

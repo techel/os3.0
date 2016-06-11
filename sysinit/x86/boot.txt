@@ -1,0 +1,35 @@
+boot module loader bootmldr.x86
+---------------------------------------
+
+- bootloader:
+  - filesystem driver is loaded to 0x7E00
+  - function for reading file provided in dx:
+
+- filesystem driver:
+	si: file path, path separator is /; ebx: destination; carry flag is set on error
+  -loads bootmldr.x86 to 0x8000
+  
+- boot module loader (bootmldr.bin):
+  - parse file bootconf.ini
+  - 'C' key to edit config
+  - configuration file bootconf.ini:
+  
+       [bootmodules]
+       <path/to/module> = <arguments/'default'>
+
+  - (for linker) memory map at 0xE000, format:
+      - first 32bit value: length of list; entries:
+		- 32bit: region base
+		- 32bit: region size
+		- 32bit: region type (0 = usable, 1 = unusable)
+
+  - (for linker) physical address of modules at 0xD000, format:
+      - first 32bit value: num modules
+		- 32bit: physical base address
+		- 32bit: size
+		- 62x8bits: arguments (asciiz)
+
+- boot module linker (bootmlnk.bin) is loaded to 0x10000, prequisites:
+	- eax: pointer to memory map
+	- ebx: pointer to module map
+	- ecx: textmode cursor character offset
