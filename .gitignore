@@ -4,8 +4,8 @@
 *.sln.docstates
 *.sdf
 *.opensdf
-log.txt
 *.opendb
+/log.txt
 /os3.0.VC.db
 /install.log
 /sysinit/sysinit.log
