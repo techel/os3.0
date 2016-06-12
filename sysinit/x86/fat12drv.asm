@@ -2,6 +2,7 @@
 org 0x7E00
 
 Boot:
+xchg bx, bx
 	mov bp, 0x7C00
 	xor ebx, ebx
 	mov word[bp+ReadSectorsOff], dx

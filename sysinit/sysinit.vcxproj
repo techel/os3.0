@@ -19,6 +19,8 @@
     <None Include="x86\bootmldr.asm" />
     <None Include="x86\fat12bootloader.asm" />
     <None Include="x86\fat12drv.asm" />
+    <None Include="x86\fat32bootloader.asm" />
+    <None Include="x86\fat32drv.asm" />
     <None Include="x86\idt.asm" />
     <None Include="x86\makefile" />
     <None Include="x86\linker.asm" />
@@ -61,7 +63,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <NMakeBuildCommandLine>make all arch=x86 fs=fat12 &amp;&amp; rd "$(ProjectDir)obj" /S /Q</NMakeBuildCommandLine>
+    <NMakeBuildCommandLine>make all arch=x86 fs=fat32 &amp;&amp; rd "$(ProjectDir)obj" /S /Q</NMakeBuildCommandLine>
     <NMakeOutput>
     </NMakeOutput>
     <NMakeCleanCommandLine>make clean arch=x86 fs=fat12</NMakeCleanCommandLine>
@@ -77,8 +79,15 @@
     <NMakeCleanCommandLine>make clean arch=x86 fs=fat12</NMakeCleanCommandLine>
     <NMakePreprocessorDefinitions>
     </NMakePreprocessorDefinitions>
+    <OutDir>.</OutDir>
+    <IntDir />
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <BuildLog>
+      <Path />
+    </BuildLog>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <BuildLog>
       <Path />
     </BuildLog>

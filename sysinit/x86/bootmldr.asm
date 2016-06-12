@@ -3,14 +3,12 @@ org 0x8000
 
 Entry:
 	mov word[ReadFileAddr], dx
-	cli
+
 	cld
-
+	cli
+	mov sp, 0x8000
 	call SetupUnrealMode
-
-	;xor bl, bl
-	;mov ax, 0x1112 ;;setup 50x25 text mode
-	;int 0x10
+	sti
 
 	mov si, MsgLoading
 	call PrintString
@@ -28,38 +26,27 @@ Entry:
 	mov byte[ConfigFileAddr+di], 0 ;;make it nullterminated 
 	mov si, ConfigFileAddr
 
-	sti
 	pusha
-
 	mov ah, 1 ;;check if 'C' key pressed
 	int 0x16
-	;;jz .parseConfig ;;any key pressed?
-		;xor ah, ah
-		;int 0x16
-		;cmp ah, 0x2E ;;'C'?
-		;jne .parseConfig
+	jz .parseConfig ;;any key pressed?
+		xor ah, ah
+		int 0x16
+		cmp ah, 0x3F ;;'F5'?
+		jne .parseConfig
 			call EditConfig
 	
    .parseConfig:
-	cli
 	popa
 	call ParseConfig
 
    .endLoading:
-	mov si, LinkerFileName
-	mov ebx, LinkerAddr
-	call word[ReadFileAddr]
-	;jnc .prepareLinking
-		;mov si, MsgLinkerNotFound
-		;call PrintString
-		;jmp Halt
-
-   call PrepareLinker
+	call PrepareLinker
 	
 Halt:
-	cli
-	hlt
-	jmp Halt
+	xor ah, ah
+	int 0x16
+	jmp 0xFFFF:0
 
 ;; edit config
 ;; si: config file ptr
@@ -213,7 +200,7 @@ EditConfig:
 		jne .ucnox
 			xor dl, dl
 			inc dh
-	   .ucnox
+	   .ucnox:
 		dec cx
 		jmp .ucloop
    .ucdone:
@@ -699,6 +686,34 @@ PrepareLinker:
 	call PrintString
 	lgdt [GDTReg]
 
+	call .initMMap
+
+	mov eax, 0xE000
+	mov ebx, 0xD000
+	call getTextmodeCursor
+
+	mov ebx, cr0 ;;switch to pmode
+	or ebx, 1
+	mov cr0, ebx
+
+	jmp 0x08:.pmode
+   .pmode:
+	mov ax, 0x10
+	mov es, ax
+	mov ds, ax
+	mov ss, ax
+	mov esp, LinkerAddr
+
+   .copylinker:
+	mov esi, LinkerBegin
+	mov edi, LinkerAddr
+	mov cx, LinkerEnd-LinkerBegin
+	rep movsb
+
+	cli
+	hlt
+	jmp LinkerAddr
+
    .initMMap:
 	mov si, MsgInitMMap
 	call PrintString
@@ -747,24 +762,7 @@ PrepareLinker:
 		inc ecx
 		jmp .printMMapEntry
    .MMapDone:
-
-	mov eax, 0xE000
-	mov ebx, 0xD000
-	call getTextmodeCursor
-
-	mov ebx, cr0 ;;switch to pmode
-	or ebx, 1
-	mov cr0, ebx
-
-	push word 0x08
-  bits 32
-	db 0x66
-	push LinkerAddr
-	db 0x66
-	cli
-	hlt
-	;retf ;;jump
-  bits 16
+	ret
 
 ;; get textmode cursor character offset
 ;; -> ecx cursor location
@@ -866,9 +864,7 @@ DefaultName		db "default",0
 MsgEditConfig	db "editing configuration file - press escape to continue",13,10,13,10,0
 MsgLoadError		db "module could not be loaded",0
 ConfigFileName		db "os3/x86/bootconf.ini",0
-LinkerFileName		db "os3/x86/bootmlnk.bin",0
 MsgConfigNotFound	db "config file not found",13,10,0
-MsgLinkerNotFound	db "linker file not found",13,10,0
 ConfigSectionName	db "[bootmodules]",13,10,0
 MsgConfigSectionNotFound	db "section [bootmodules] not found",13,10,0
 MsgConfigParseError			db "config file parse error",13,10,0
@@ -906,11 +902,17 @@ GDTReg:
 	dd GDTStart
 
 
-TmpKeyBuffer	equ 0xAA00
-TmpValueBuffer	equ 0xAB00
-ReadFileAddr	equ 0xAC00
-ConfigFileAddr	equ 0xB000
-ModuleEntriesAddr equ 0xD000
+TmpKeyBuffer	equ 0xCB00
+TmpValueBuffer	equ 0xCE00
+ReadFileAddr	equ 0xCFF0
+ConfigFileAddr	equ 0xD000
+ModuleEntriesAddr equ 0xF000
 MemoryMapAddr equ 0xE000
 LinkerAddr	equ 0x10000
 StackSize		equ 0x4000
+
+LinkerBegin:
+align 4
+;%include "output/linker.bin"
+align 4
+LinkerEnd:

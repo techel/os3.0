@@ -19,7 +19,7 @@ install: all
 
 install-image: install
 
-	imdisk -a -f "$(osimg)" -m S:
+	imdisk -a -f "$(osimg)" -m S: -o rem
 	xcopy /e /s /y $(osdir) S:
 	imdisk -D -m S:
 	

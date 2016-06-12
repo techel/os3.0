@@ -37,6 +37,12 @@
     <None Include="x86\sysinit16.asm">
       <Filter>x86\boot</Filter>
     </None>
+    <None Include="x86\fat32bootloader.asm">
+      <Filter>x86\boot</Filter>
+    </None>
+    <None Include="x86\fat32drv.asm">
+      <Filter>x86\boot</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="x86\boot.txt">

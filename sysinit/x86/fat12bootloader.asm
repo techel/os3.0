@@ -2,17 +2,18 @@ bits 16
 org 0x7C3E
 
 Boot:
-	cli
 	cld
 	xor ax, ax
 	mov es, ax
 	mov ds, ax
+	cli
 	mov ss, ax
 	mov sp, 0x7000
+	sti
 	mov bp, 0x7C00
 	
 	mov byte[bp+DriveNum], dl
-	xchg ebx, ebx
+	;xor ebx, ebx
 
    .PrepareRootDirLocation:
 	mov ax, 32 ;;32 byte directory entries
@@ -25,8 +26,9 @@ Boot:
     add ax, word[bp+ReservedSec]
     mov word[bp+RootDirOff], ax
 	add ax, bx
-	dec ax
-	dec ax ;;sub ax, 2
+	movzx bx, byte[bp+SecPerClus]
+	shl bx, 1 ;;sub 2 clusters
+	sub ax, bx
     mov word[bp+DataAreaOff], ax
 
    .PrepareGeometry:
@@ -66,7 +68,7 @@ TheEnd:
 FindFile:
    .secloop:
 		pusha
-		mov cx, 1
+		movzx cx, byte[bp+SecPerClus]
 		mov bx, TmpDirBuffer
 		pusha
 		call ReadSectors
@@ -96,7 +98,7 @@ FindFile:
 .found:
 	add sp, 16
 	mov ax, word[bx+0x1A]
-	test ax, (1<<4)
+	test word[bx+0x0B], (1<<4)
 	clc
 	ret
 
@@ -283,7 +285,7 @@ PrintString:
 ;; Variables
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-MsgMissing db "fat12drv.bin missing",0
+MsgMissing db "no fat12drv",0
 ImageDirName db "OS3        "
 ImageDir2Name db "X86        "
 ImageFileName db "FAT12DRVBIN"
